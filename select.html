@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Campus • Salles</title>
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- UI Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Data -->
+    <script src="data.js"></script>
+  </head>
+  <body
+    class="bg-neutral-100 text-neutral-900 antialiased"
+    style="
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI,
+        Roboto, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+    "
+  >
+    <!-- Page Wrapper -->
+    <div class="min-h-screen">
+      <!-- Header -->
+      <header class="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/80 border-b border-neutral-200">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div class="flex h-16 items-center justify-between">
+            <!-- Brand -->
+            <div class="flex items-center gap-3">
+              <button onclick="window.location.href='dashboard.html'" class="flex items-center gap-2 hover:opacity-80 transition">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-900 text-white text-sm font-medium">
+                  GB
+                </span>
+                <div class="leading-tight">
+                  <div class="text-sm font-semibold tracking-tight">Grenoble INP</div>
+                  <div class="text-[11px] text-neutral-500 -mt-0.5">Classroom Booking</div>
+                </div>
+              </button>
+              <div class="hidden md:block h-5 w-px bg-neutral-200 ml-2"></div>
+              <span class="hidden md:block text-sm text-neutral-600" id="campusTitle">Campus — Salles</span>
+            </div>
+
+            <!-- Navigation -->
+            <div class="hidden md:flex items-center gap-6">
+              <nav class="flex items-center gap-6 text-sm">
+                <a href="dashboard.html" class="text-neutral-500 hover:text-neutral-900 tracking-tight">Tableau de bord</a>
+                <a href="#" class="text-neutral-900 font-medium hover:text-neutral-700 tracking-tight" onclick="return false;">Salles</a>
+              </nav>
+
+              <!-- User menu -->
+              <div class="flex items-center gap-3">
+                <button class="relative inline-flex h-9 w-9 items-center justify-center rounded-full hover:bg-neutral-100 transition">
+                  <i data-lucide="bell" class="w-4 h-4 text-neutral-600"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                  <button
+                    onclick="window.location.href='login.html'"
+                    class="h-9 w-9 rounded-full overflow-hidden ring-1 ring-neutral-200 hover:ring-2 hover:ring-neutral-300 transition"
+                    title="Se déconnecter"
+                  >
+                    <img id="headerAvatar" class="h-full w-full object-cover" src="" alt="Avatar">
+                  </button>
+                  <div class="hidden sm:flex flex-col leading-tight">
+                    <span id="headerUserName" class="text-sm font-medium text-neutral-800"></span>
+                    <span class="text-xs text-neutral-500">Connecté</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile menu button -->
+            <button class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-full hover:bg-neutral-100">
+              <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Filters -->
+        <section class="mb-8">
+          <div class="flex flex-col gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Availability -->
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-neutral-600">Disponibilité</span>
+                <!-- Custom Select -->
+                <div class="relative" id="availabilityFilter">
+                  <button
+                    id="availabilityButton"
+                    class="flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-3 py-2 text-sm hover:border-neutral-300 transition"
+                  >
+                    <span
+                      class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"
+                    ></span>
+                    <span id="availabilityLabel" class="font-medium"
+                      >Disponible</span
+                    >
+                    <i
+                      data-lucide="chevron-down"
+                      class="w-4 h-4 text-neutral-500"
+                    ></i>
+                  </button>
+                  <div
+                    id="availabilityMenu"
+                    class="hidden absolute mt-2 w-44 rounded-xl border border-neutral-200 bg-white shadow-lg overflow-hidden"
+                  >
+                    <button
+                      data-value="Tous"
+                      class="w-full text-left px-3 py-2 text-sm hover:bg-neutral-50 flex items-center gap-2"
+                    >
+                      <span
+                        class="inline-flex h-2.5 w-2.5 rounded-full bg-neutral-400"
+                      ></span>
+                      Tous
+                    </button>
+                    <button
+                      data-value="Disponible"
+                      class="w-full text-left px-3 py-2 text-sm hover:bg-neutral-50 flex items-center gap-2"
+                    >
+                      <span
+                        class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"
+                      ></span>
+                      Disponible
+                    </button>
+                    <button
+                      data-value="Occupée"
+                      class="w-full text-left px-3 py-2 text-sm hover:bg-neutral-50 flex items-center gap-2"
+                    >
+                      <span
+                        class="inline-flex h-2.5 w-2.5 rounded-full bg-rose-500"
+                      ></span>
+                      Occupée
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Building -->
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-neutral-600">Choix du Bâtiment</span>
+                <div id="buildingGroup" class="flex items-center gap-2">
+                  <button
+                    data-building="A"
+                    class="building-btn px-3 py-2 text-sm rounded-lg border border-neutral-200 bg-white hover:border-neutral-300 transition font-medium"
+                  >
+                    A
+                  </button>
+                  <button
+                    data-building="B"
+                    class="building-btn px-3 py-2 text-sm rounded-lg border border-neutral-200 bg-white hover:border-neutral-300 transition font-medium"
+                  >
+                    B
+                  </button>
+                  <button
+                    data-building="C"
+                    class="building-btn px-3 py-2 text-sm rounded-lg border border-neutral-200 bg-white hover:border-neutral-300 transition font-medium"
+                  >
+                    C
+                  </button>
+                  <button
+                    data-building="D"
+                    class="building-btn px-3 py-2 text-sm rounded-lg border border-neutral-200 bg-white hover:border-neutral-300 transition font-medium"
+                  >
+                    D
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Soon Free Section -->
+        <section class="mb-10">
+          <h2 class="text-2xl tracking-tight font-semibold mb-4">
+            Les salles qui se libèrent prochainement
+          </h2>
+          <div
+            id="soonGrid"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          >
+            <!-- Cards injected by JS -->
+          </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="pb-10">
+          <h3 class="text-xl tracking-tight font-semibold mb-4">
+            Résultats de votre recherche
+          </h3>
+          <div
+            id="resultsGrid"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          >
+            <!-- Cards injected by JS -->
+          </div>
+        </section>
+      </main>
+
+      <footer class="border-t border-neutral-200">
+        <div
+          class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between"
+        >
+          <p class="text-sm text-neutral-500">
+            © <span id="year"></span> Campus
+          </p>
+          <div class="flex items-center gap-4 text-sm text-neutral-500">
+            <a class="hover:text-neutral-900 transition" href="#">Aide</a>
+            <a class="hover:text-neutral-900 transition" href="#"
+              >Confidentialité</a
+            >
+            <a class="hover:text-neutral-900 transition" href="#">Conditions</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Templates -->
+    <template id="roomCardTemplate">
+      <article
+        class="group rounded-2xl bg-white border border-neutral-200 hover:border-neutral-300 transition shadow-sm overflow-hidden"
+      >
+        <div class="relative">
+          <div class="aspect-[16/10] bg-neutral-100">
+            <img class="w-full h-full object-cover" alt="" />
+          </div>
+          <div
+            class="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/0 via-black/0 to-black/0 group-hover:to-black/10 transition"
+          ></div>
+        </div>
+
+        <div class="p-4">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-base font-medium tracking-tight room-name">
+              Salle
+            </h4>
+            <span
+              class="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border bg-white availability-pill"
+            >
+              <span class="inline-flex h-1.5 w-1.5 rounded-full"></span>
+              <span class="font-medium"></span>
+            </span>
+          </div>
+
+          <div
+            class="flex flex-wrap items-center gap-2 text-xs text-neutral-600"
+          >
+            <span
+              class="inline-flex items-center gap-1.5 px-2 py-1 bg-neutral-50 rounded-lg border border-neutral-200"
+            >
+              <i data-lucide="wifi" class="w-3.5 h-3.5"></i> Wifi
+            </span>
+            <span
+              class="inline-flex items-center gap-1.5 px-2 py-1 bg-neutral-50 rounded-lg border border-neutral-200 capacity-chip"
+            >
+              <i data-lucide="users" class="w-3.5 h-3.5"></i>
+              <span class="capacity-text"></span>
+            </span>
+            <span
+              class="inline-flex items-center gap-1.5 px-2 py-1 bg-neutral-50 rounded-lg border border-neutral-200"
+            >
+              <i data-lucide="monitor" class="w-3.5 h-3.5"></i> Ordinateurs
+            </span>
+            <span
+              class="inline-flex items-center gap-1.5 px-2 py-1 bg-neutral-50 rounded-lg border border-neutral-200"
+            >
+              <i data-lucide="projector" class="w-3.5 h-3.5"></i>
+              Vidéoprojecteur
+            </span>
+            <span
+              class="inline-flex items-center gap-1.5 px-2 py-1 bg-neutral-50 rounded-lg border border-neutral-200"
+            >
+              <i data-lucide="presentation" class="w-3.5 h-3.5"></i> Tableau
+              blanc
+            </span>
+          </div>
+
+          <div class="mt-4 soon-wrap hidden">
+            <div
+              class="flex items-center justify-between text-xs text-neutral-600 mb-2"
+            >
+              <span
+                >Reste:
+                <span class="mins-left font-medium"></span> minutes</span
+              >
+              <span class="font-medium text-emerald-600 soon-state"
+                >Bientôt libre</span
+              >
+            </div>
+            <div class="h-2 rounded-full bg-neutral-100 overflow-hidden">
+              <div
+                class="h-full bg-emerald-500 progress-bar"
+                style="width: 40%"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script>
+      // Récupérer le campus sélectionné depuis localStorage
+      const selectedCampusId = parseInt(localStorage.getItem('selectedCampusId'));
+      const selectedCampusName = localStorage.getItem('selectedCampusName');
+
+      // Vérifier qu'un campus a bien été sélectionné
+      if (!selectedCampusId) {
+        alert('Aucun campus sélectionné. Redirection vers le dashboard.');
+        window.location.href = 'dashboard.html';
+      }
+
+      // Filtrer les salles pour ce campus uniquement
+      const campusRooms = getRooms(selectedCampusId);
+
+      // State
+      let state = {
+        availability: "Disponible", // "Tous" | "Disponible" | "Occupée"
+        building: "A",
+        search: "",
+      };
+
+      // Elements
+      const soonGrid = document.getElementById("soonGrid");
+      const resultsGrid = document.getElementById("resultsGrid");
+      const roomCardTemplate = document.getElementById("roomCardTemplate");
+      const buildingGroup = document.getElementById("buildingGroup");
+      const availabilityButton = document.getElementById("availabilityButton");
+      const availabilityMenu = document.getElementById("availabilityMenu");
+      const availabilityLabel = document.getElementById("availabilityLabel");
+      const searchInput = document.getElementById("searchInput");
+
+      // Helpers
+      const MAX_SOON_MIN = 20;
+      function inSoonWindow(room) {
+        return (
+          room.availability === "Occupée" &&
+          room.availableIn > 0 &&
+          room.availableIn <= MAX_SOON_MIN
+        );
+      }
+      function availabilityMatch(room) {
+        if (state.availability === "Tous") return true;
+        return room.availability === state.availability;
+      }
+      function buildingMatch(room) {
+        return state.building ? room.building === state.building : true;
+      }
+      function searchMatch(room) {
+        if (!state.search) return true;
+        return (
+          room.name.toLowerCase().includes(state.search) ||
+          room.building.toLowerCase().includes(state.search)
+        );
+      }
+      function formatCapacity(n) {
+        return `${n} places`;
+      }
+      function setAvailabilityPill(pill, availability) {
+        const dot = pill.querySelector("span:first-child");
+        const label = pill.querySelector("span:last-child");
+        label.textContent = availability;
+        if (availability === "Disponible") {
+          pill.classList.remove("border-rose-200");
+          dot.className = "inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500";
+        } else {
+          dot.className = "inline-flex h-1.5 w-1.5 rounded-full bg-rose-500";
+        }
+      }
+      function progressWidth(minsLeft) {
+        const clamped = Math.max(0, Math.min(MAX_SOON_MIN, minsLeft));
+        const progress = (MAX_SOON_MIN - clamped) / MAX_SOON_MIN;
+        return Math.round(progress * 100);
+      }
+
+      function createRoomCard(room, showSoon = false) {
+        const node = roomCardTemplate.content.cloneNode(true);
+        const img = node.querySelector("img");
+        const nameEl = node.querySelector(".room-name");
+        const capacityText = node.querySelector(".capacity-text");
+        const pill = node.querySelector(".availability-pill");
+        const soonWrap = node.querySelector(".soon-wrap");
+        const minsLeftEl = node.querySelector(".mins-left");
+        const bar = node.querySelector(".progress-bar");
+
+        img.src = room.img;
+        img.alt = room.name;
+        nameEl.textContent = `${room.name}`;
+        capacityText.textContent = formatCapacity(room.seats);
+        setAvailabilityPill(pill, room.availability);
+
+        if (showSoon && inSoonWindow(room)) {
+          soonWrap.classList.remove("hidden");
+          minsLeftEl.textContent = room.availableIn;
+          const w = progressWidth(room.availableIn);
+          bar.style.width = w + "%";
+        } else {
+          soonWrap.classList.add("hidden");
+        }
+
+        // Disable optional chips if not available
+        if (!room.computers) {
+          const chip = node.querySelectorAll(".flex.flex-wrap span")[2];
+          chip.classList.add("opacity-50");
+        }
+        if (!room.projector) {
+          const chip = node.querySelectorAll(".flex.flex-wrap span")[3];
+          chip.classList.add("opacity-50");
+        }
+        // whiteboard is always shown; dim if not present
+        if (!room.whiteboard) {
+          const chip = node.querySelectorAll(".flex.flex-wrap span")[4];
+          chip.classList.add("opacity-50");
+        }
+
+        const article = node.querySelector("article");
+        article.addEventListener("click", () => {
+          // Store selected room data and navigate to booking form
+          const roomData = {
+            id: room.id,
+            name: room.name,
+            building: room.building,
+            seats: room.seats,
+            computers: room.computers,
+            projector: room.projector,
+            whiteboard: room.whiteboard,
+            wifi: room.wifi,
+            availability: room.availability,
+            img: room.img,
+            campusId: room.campusId,
+            campusName: selectedCampusName
+          };
+          localStorage.setItem('selectedRoom', JSON.stringify(roomData));
+          window.location.href = 'formulaire.html';
+        });
+
+        return node;
+      }
+
+      function render() {
+        // Apply filters
+        const filtered = campusRooms.filter(
+          (r) => availabilityMatch(r) && buildingMatch(r) && searchMatch(r)
+        );
+
+        // Soon section
+        const soon = campusRooms
+          .filter((r) => buildingMatch(r) && searchMatch(r))
+          .filter(inSoonWindow)
+          .sort((a, b) => a.availableIn - b.availableIn)
+          .slice(0, 8);
+
+        soonGrid.innerHTML = "";
+        if (soon.length === 0) {
+          soonGrid.innerHTML = `<div class="col-span-full text-sm text-neutral-500">Aucune salle ne se libère dans les ${MAX_SOON_MIN} prochaines minutes.</div>`;
+        } else {
+          soon.forEach((room) => {
+            soonGrid.appendChild(createRoomCard(room, true));
+          });
+        }
+
+        // Results
+        resultsGrid.innerHTML = "";
+        if (filtered.length === 0) {
+          resultsGrid.innerHTML = `<div class="col-span-full text-sm text-neutral-500">Aucun résultat ne correspond à votre recherche.</div>`;
+        } else {
+          filtered.forEach((room) => {
+            resultsGrid.appendChild(createRoomCard(room, false));
+          });
+        }
+
+        // Refresh icons
+        if (window.lucide) {
+          lucide.createIcons();
+        }
+      }
+
+      // Availability dropdown
+      availabilityButton.addEventListener("click", () => {
+        availabilityMenu.classList.toggle("hidden");
+      });
+      availabilityMenu.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const value = btn.getAttribute("data-value");
+          state.availability = value;
+          availabilityLabel.textContent = value;
+          availabilityMenu.classList.add("hidden");
+          render();
+        });
+      });
+      document.addEventListener("click", (e) => {
+        if (
+          !availabilityButton.contains(e.target) &&
+          !availabilityMenu.contains(e.target)
+        ) {
+          availabilityMenu.classList.add("hidden");
+        }
+      });
+
+      // Building buttons
+      function setActiveBuilding(building) {
+        state.building = building;
+        Array.from(buildingGroup.querySelectorAll("button")).forEach((btn) => {
+          const active = btn.getAttribute("data-building") === building;
+          btn.classList.toggle("bg-neutral-900", active);
+          btn.classList.toggle("text-white", active);
+          btn.classList.toggle("border-neutral-900", active);
+        });
+      }
+      buildingGroup.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const b = btn.getAttribute("data-building");
+          setActiveBuilding(b);
+          render();
+        });
+      });
+
+      // Search
+      searchInput?.addEventListener("input", (e) => {
+        state.search = (e.target.value || "").trim().toLowerCase();
+        render();
+      });
+
+      // Init
+      window.addEventListener("DOMContentLoaded", () => {
+        setActiveBuilding(state.building);
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        // Charger les données de l'utilisateur
+        const user = getCurrentUser();
+        document.getElementById('headerUserName').textContent = user.firstName;
+        document.getElementById('headerAvatar').src = user.avatar;
+
+        // Display selected campus
+        if (selectedCampusName) {
+          document.getElementById('campusTitle').textContent = selectedCampusName + ' — Salles';
+        }
+
+        if (window.lucide) lucide.createIcons();
+        render();
+      });
+    </script>
+  </body>
+</html>
