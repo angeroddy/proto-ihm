@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Réservation Confirmée - Grenoble INP</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Data -->
+    <script src="data.js"></script>
+
+    <style>
+      html {
+        font-family: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI,
+          Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
+      }
+    </style>
+  </head>
+  <body class="bg-neutral-50 text-neutral-900 antialiased">
+    <!-- Header -->
+    <header class="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/80 border-b border-neutral-200">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+          <!-- Brand -->
+          <div class="flex items-center gap-3">
+            <button onclick="window.location.href='dashboard.html'" class="flex items-center gap-2 hover:opacity-80 transition">
+              <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-900 text-white text-sm font-medium">
+                GB
+              </span>
+              <div class="leading-tight">
+                <div class="text-sm font-semibold tracking-tight">Grenoble INP</div>
+                <div class="text-[11px] text-neutral-500 -mt-0.5">Classroom Booking</div>
+              </div>
+            </button>
+          </div>
+
+          <!-- Navigation -->
+          <div class="hidden md:flex items-center gap-6">
+            <nav class="flex items-center gap-6 text-sm">
+              <a href="dashboard.html" class="text-neutral-500 hover:text-neutral-900 tracking-tight">Tableau de bord</a>
+              <span class="text-neutral-900 font-medium tracking-tight">Réservation confirmée</span>
+            </nav>
+
+            <!-- User menu -->
+            <div class="flex items-center gap-3">
+              <button class="relative inline-flex h-9 w-9 items-center justify-center rounded-full hover:bg-neutral-100 transition">
+                <i data-lucide="bell" class="w-4 h-4 text-neutral-600"></i>
+              </button>
+              <div class="flex items-center gap-2">
+                <button
+                  onclick="window.location.href='index.html'"
+                  class="h-9 w-9 rounded-full overflow-hidden ring-1 ring-neutral-200 hover:ring-2 hover:ring-neutral-300 transition"
+                  title="Se déconnecter"
+                >
+                  <img id="headerAvatar" class="h-full w-full object-cover" src="" alt="Avatar">
+                </button>
+                <div class="hidden sm:flex flex-col leading-tight">
+                  <span id="headerUserName" class="text-sm font-medium text-neutral-800"></span>
+                  <span class="text-xs text-neutral-500">Connecté</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile menu button -->
+          <button class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-full hover:bg-neutral-100">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
+      <!-- Success Animation -->
+      <div class="text-center mb-8">
+        <div class="inline-flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 mb-4">
+          <i data-lucide="check-circle" class="w-10 h-10 text-emerald-600"></i>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-semibold tracking-tight mb-2">
+          Réservation confirmée !
+        </h1>
+        <p class="text-neutral-600">
+          Votre salle a été réservée avec succès
+        </p>
+      </div>
+
+      <!-- Reservation Details Card -->
+      <div class="rounded-xl border border-neutral-200/70 bg-white p-6 sm:p-8 mb-6">
+        <div class="flex items-center justify-between mb-6 pb-6 border-b border-neutral-200">
+          <div>
+            <h2 class="text-lg font-semibold tracking-tight">Détails de la réservation</h2>
+            <p class="text-sm text-neutral-600 mt-1">Numéro : <span id="reservationId" class="font-mono font-medium text-neutral-900">#000</span></p>
+          </div>
+          <span class="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 text-sm font-medium text-emerald-700">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            Confirmée
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Left column -->
+          <div class="space-y-4">
+            <div>
+              <p class="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-1">Campus</p>
+              <p id="campusName" class="text-base font-medium text-neutral-900">-</p>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-1">Salle</p>
+              <div class="flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-4 h-4 text-neutral-500"></i>
+                <p id="roomName" class="text-base font-medium text-neutral-900">-</p>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-1">Date</p>
+              <div class="flex items-center gap-2">
+                <i data-lucide="calendar" class="w-4 h-4 text-neutral-500"></i>
+                <p id="reservationDate" class="text-base font-medium text-neutral-900">-</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <div class="space-y-4">
+            <div>
+              <p class="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-1">Horaire</p>
+              <div class="flex items-center gap-2">
+                <i data-lucide="clock" class="w-4 h-4 text-neutral-500"></i>
+                <p id="reservationTime" class="text-base font-medium text-neutral-900">-</p>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-1">Participants</p>
+              <div class="flex items-center gap-2">
+                <i data-lucide="users" class="w-4 h-4 text-neutral-500"></i>
+                <p id="participantsCount" class="text-base font-medium text-neutral-900">-</p>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-1">Organisateur</p>
+              <div class="flex items-center gap-2">
+                <i data-lucide="user" class="w-4 h-4 text-neutral-500"></i>
+                <p id="organizerName" class="text-base font-medium text-neutral-900">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Purpose if provided -->
+        <div id="purposeSection" class="mt-6 pt-6 border-t border-neutral-200 hidden">
+          <p class="text-xs font-medium text-neutral-500 uppercase tracking-wide mb-2">Objet de la réservation</p>
+          <p id="purposeText" class="text-sm text-neutral-700">-</p>
+        </div>
+      </div>
+
+      <!-- Important Info -->
+      <div class="rounded-xl bg-blue-50 border border-blue-200 p-4 mb-6">
+        <div class="flex gap-3">
+          <i data-lucide="info" class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"></i>
+          <div class="text-sm text-blue-900">
+            <p class="font-medium mb-1">Informations importantes</p>
+            <ul class="list-disc list-inside space-y-1 text-blue-800">
+              <li>Un email de confirmation a été envoyé à votre adresse</li>
+              <li>Veuillez arriver 5 minutes avant le début de votre réservation</li>
+              <li>En cas d'annulation, merci de le faire au moins 24h à l'avance</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button
+          onclick="window.location.href='dashboard.html'"
+          class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-neutral-900 px-6 py-3 text-sm font-medium text-white hover:bg-black transition"
+        >
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          Retour au tableau de bord
+        </button>
+        <button
+          onclick="window.print()"
+          class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-6 py-3 text-sm font-medium text-neutral-800 hover:bg-neutral-50 transition"
+        >
+          <i data-lucide="printer" class="w-4 h-4"></i>
+          Imprimer
+        </button>
+        <button
+          onclick="shareReservation()"
+          class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg border border-neutral-300 bg-white px-6 py-3 text-sm font-medium text-neutral-800 hover:bg-neutral-50 transition"
+        >
+          <i data-lucide="share-2" class="w-4 h-4"></i>
+          Partager
+        </button>
+      </div>
+    </main>
+
+    <!-- Scripts -->
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        if (window.lucide) window.lucide.createIcons();
+
+        // Charger les données utilisateur
+        const user = getCurrentUser();
+        document.getElementById('headerUserName').textContent = user.firstName;
+        document.getElementById('headerAvatar').src = user.avatar;
+
+        // Récupérer la réservation depuis localStorage
+        const reservationDataStr = localStorage.getItem('lastReservation');
+
+        if (!reservationDataStr) {
+          alert('Aucune réservation trouvée.');
+          window.location.href = 'dashboard.html';
+          return;
+        }
+
+        const reservation = JSON.parse(reservationDataStr);
+
+        // Remplir les informations
+        document.getElementById('reservationId').textContent = '#' + reservation.id;
+        document.getElementById('campusName').textContent = reservation.campusName || 'Campus';
+        document.getElementById('roomName').textContent = reservation.roomName || 'Salle';
+
+        // Formatter la date
+        const dateObj = new Date(reservation.date);
+        const dateFormatted = dateObj.toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        document.getElementById('reservationDate').textContent = dateFormatted;
+
+        document.getElementById('reservationTime').textContent = reservation.startTime + ' - ' + reservation.endTime;
+        document.getElementById('participantsCount').textContent = reservation.participants + ' personnes';
+        document.getElementById('organizerName').textContent = user.firstName + ' ' + user.lastName;
+
+        // Afficher l'objet si fourni
+        if (reservation.purpose && reservation.purpose.trim() !== '' && reservation.purpose !== 'Réservation de salle') {
+          document.getElementById('purposeSection').classList.remove('hidden');
+          document.getElementById('purposeText').textContent = reservation.purpose;
+        }
+      });
+
+      function shareReservation() {
+        const reservation = JSON.parse(localStorage.getItem('lastReservation'));
+        const text = `Réservation confirmée !\n\nSalle: ${reservation.roomName}\nDate: ${reservation.date}\nHoraire: ${reservation.startTime} - ${reservation.endTime}\nParticipants: ${reservation.participants}`;
+
+        if (navigator.share) {
+          navigator.share({
+            title: 'Réservation de salle',
+            text: text
+          }).catch(() => {});
+        } else {
+          // Fallback: copier dans le presse-papier
+          navigator.clipboard.writeText(text).then(() => {
+            alert('Détails de la réservation copiés dans le presse-papier !');
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

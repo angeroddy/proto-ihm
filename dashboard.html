@@ -299,8 +299,38 @@
         </div>
       </section>
 
+      <!-- Mes Réservations -->
+      <section class="mt-12">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-2xl font-semibold tracking-tight">Mes Réservations</h2>
+            <p class="text-sm text-neutral-600 mt-1">Vos réservations à venir</p>
+          </div>
+          <a href="#" class="text-sm font-medium text-neutral-900 hover:text-neutral-700">
+            Voir tout
+          </a>
+        </div>
+
+        <div id="reservationsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Les réservations seront chargées ici dynamiquement -->
+        </div>
+
+        <!-- Empty state -->
+        <div id="emptyReservations" class="hidden text-center py-12 rounded-xl border border-neutral-200 bg-white">
+          <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100 mb-4">
+            <i data-lucide="calendar-x" class="w-8 h-8 text-neutral-500"></i>
+          </div>
+          <h3 class="text-lg font-semibold tracking-tight mb-2">Aucune réservation</h3>
+          <p class="text-sm text-neutral-600 mb-4">Vous n'avez pas encore de réservation à venir</p>
+          <a href="#campus-section" class="inline-flex items-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-black transition">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            Créer une réservation
+          </a>
+        </div>
+      </section>
+
       <!-- Campus selection heading -->
-      <section class="mt-12 text-center">
+      <section id="campus-section" class="mt-12 text-center">
         <p class="text-sm text-neutral-600">
           Vous souhaitez effectuer une autre réservation ?
         </p>
@@ -945,7 +975,120 @@
         document.getElementById('statHoursReserved').textContent = stats.hoursReserved;
         document.getElementById('statGrowthRate').textContent = '+' + stats.growthRate + '%';
         document.getElementById('statCancellationRate').textContent = stats.cancellationRate + '%';
+
+        // Charger les réservations de l'utilisateur
+        loadUserReservations();
       });
+
+      // Fonction pour charger les réservations
+      function loadUserReservations() {
+        const user = getCurrentUser();
+        const userReservations = getReservations(user.id);
+
+        // Filtrer les réservations à venir (pas annulées, pas terminées)
+        const today = new Date();
+        const upcomingReservations = userReservations.filter(r => {
+          const resDate = new Date(r.date);
+          return r.status === 'confirmée' && resDate >= today;
+        });
+
+        const reservationsList = document.getElementById('reservationsList');
+        const emptyState = document.getElementById('emptyReservations');
+
+        if (upcomingReservations.length === 0) {
+          reservationsList.classList.add('hidden');
+          emptyState.classList.remove('hidden');
+        } else {
+          reservationsList.classList.remove('hidden');
+          emptyState.classList.add('hidden');
+
+          // Afficher les réservations
+          reservationsList.innerHTML = upcomingReservations.map(reservation => {
+            const room = getRoomById(reservation.roomId);
+            const campus = getCampusById(reservation.campusId);
+
+            // Formater la date
+            const resDate = new Date(reservation.date);
+            const dateFormatted = resDate.toLocaleDateString('fr-FR', {
+              weekday: 'short',
+              day: 'numeric',
+              month: 'short'
+            });
+
+            return `
+              <div class="rounded-xl border border-neutral-200 bg-white p-5 hover:border-neutral-300 transition">
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex-1">
+                    <h3 class="font-semibold tracking-tight text-neutral-900">${room ? room.name : 'Salle'}</h3>
+                    <p class="text-xs text-neutral-500 mt-0.5">${campus ? campus.name : 'Campus'}</p>
+                  </div>
+                  <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                    <i data-lucide="check-circle" class="w-3 h-3"></i>
+                    Confirmée
+                  </span>
+                </div>
+
+                <div class="space-y-2 mb-4">
+                  <div class="flex items-center gap-2 text-sm text-neutral-700">
+                    <i data-lucide="calendar" class="w-4 h-4 text-neutral-500"></i>
+                    <span>${dateFormatted}</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-sm text-neutral-700">
+                    <i data-lucide="clock" class="w-4 h-4 text-neutral-500"></i>
+                    <span>${reservation.startTime} - ${reservation.endTime}</span>
+                  </div>
+                  <div class="flex items-center gap-2 text-sm text-neutral-700">
+                    <i data-lucide="users" class="w-4 h-4 text-neutral-500"></i>
+                    <span>${reservation.participants} participants</span>
+                  </div>
+                </div>
+
+                <div class="flex gap-2">
+                  <button
+                    onclick="viewReservationDetails(${reservation.id})"
+                    class="flex-1 rounded-lg bg-neutral-900 px-3 py-2 text-xs font-medium text-white hover:bg-black transition"
+                  >
+                    Détails
+                  </button>
+                  <button
+                    onclick="cancelReservation(${reservation.id})"
+                    class="rounded-lg border border-neutral-300 px-3 py-2 text-xs font-medium text-neutral-700 hover:bg-neutral-50 transition"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // Re-créer les icônes Lucide
+          if (window.lucide) window.lucide.createIcons();
+        }
+      }
+
+      // Fonction pour voir les détails d'une réservation
+      function viewReservationDetails(reservationId) {
+        const reservation = getReservationById(reservationId);
+        if (!reservation) return;
+
+        const room = getRoomById(reservation.roomId);
+        const campus = getCampusById(reservation.campusId);
+
+        alert(`Réservation #${reservationId}\n\nCampus: ${campus ? campus.name : 'N/A'}\nSalle: ${room ? room.name : 'N/A'}\nDate: ${reservation.date}\nHoraire: ${reservation.startTime} - ${reservation.endTime}\nParticipants: ${reservation.participants}\nObjet: ${reservation.purpose}\nStatut: ${reservation.status}`);
+      }
+
+      // Fonction pour annuler une réservation
+      function cancelReservation(reservationId) {
+        if (confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')) {
+          const success = window.cancelReservation(reservationId);
+          if (success) {
+            alert('Réservation annulée avec succès.');
+            loadUserReservations(); // Recharger la liste
+          } else {
+            alert('Erreur lors de l\'annulation.');
+          }
+        }
+      }
 
       // Icons
       lucide.createIcons();

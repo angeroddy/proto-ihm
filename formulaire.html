@@ -784,11 +784,23 @@
         // Sauvegarder la réservation (simulation)
         const newReservation = createReservation(reservationData);
 
-        // Afficher une confirmation
-        alert(`Réservation confirmée !\n\nSalle: ${selectedRoom.name}\nDate: ${date}\nHoraire: ${startTime} - ${endTime}\nParticipants: ${participants}\n\nNuméro de réservation: #${newReservation.id}`);
+        // Préparer les données pour la page de succès
+        const successData = {
+          id: newReservation.id,
+          roomName: selectedRoom.name,
+          campusName: selectedRoom.campusName || 'Campus',
+          date: date,
+          startTime: startTime,
+          endTime: endTime,
+          participants: participants,
+          purpose: comments || 'Réservation de salle'
+        };
 
-        // Rediriger vers le dashboard
-        window.location.href = 'dashboard.html';
+        // Sauvegarder dans localStorage pour la page de succès
+        localStorage.setItem('lastReservation', JSON.stringify(successData));
+
+        // Rediriger vers la page de succès
+        window.location.href = 'success.html';
       });
     </script>
   </body>
